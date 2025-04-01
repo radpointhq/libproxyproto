@@ -13,6 +13,7 @@ LIBPROXYPROTO_GETPEERNAME_CACHE ?= ENABLED
 
 libproxyproto:
 	$(CC) -Wall -Wextra -pedantic -D_GNU_SOURCE -nostartfiles -shared -fpic -fPIC \
+		-g -ggdb \
 		-DGETPEERNAME_CACHE_$(LIBPROXYPROTO_GETPEERNAME_CACHE) \
 		-fvisibility=hidden \
 		-Wconversion -Wshadow \
@@ -23,6 +24,7 @@ libproxyproto:
 
 libproxyproto_connect:
 	$(CC) -Wall -Wextra -pedantic -D_GNU_SOURCE -nostartfiles -shared -fpic -fPIC \
+		-g -ggdb \
 		-fvisibility=hidden \
 		-Wconversion -Wshadow \
 		-Wpointer-arith -Wcast-qual \
