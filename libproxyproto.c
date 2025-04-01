@@ -239,9 +239,9 @@ int close(int fd) {
 int getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
 
   if (sockfd >= CACHE_MAX) {
-    if (debug)
-    (void)fprintf(stderr, "getpeername() insufficient cache\n");
-    return 0;
+      if (debug)
+      (void)fprintf(stderr, "getpeername() insufficient cache\n");
+    return sys_getpeername(sockfd, addr, addrlen);
   }
 
   if (addr_cache[sockfd] == NULL)
