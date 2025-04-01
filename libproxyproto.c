@@ -68,7 +68,7 @@ static int version = LIBPROXYPROTO_V1 | LIBPROXYPROTO_V2;
 
 #ifdef GETPEERNAME_CACHE_ENABLED
 // cache of sock addresses
-#define CACHE_MAX 1024
+#define CACHE_MAX 4096
 static struct sockaddr *addr_cache[CACHE_MAX + 1] = {0};
 #endif
 
@@ -226,7 +226,7 @@ LIBPROXYPROTO_DONE:
 int close(int fd) {
   int ret = sys_close(fd);
 
-  if (ret == 0 && addr_cache[fd] != NULL) {
+  if (ret == 0 && fd < CACHE_MAX && addr_cache[fd] != NULL) {
     if (debug)
       (void)fprintf(stderr, "close(): freeing cache\n");
     free(addr_cache[fd]);
@@ -237,6 +237,12 @@ int close(int fd) {
 }
 
 int getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
+
+  if (sockfd >= CACHE_MAX) {
+    if (debug)
+    (void)fprintf(stderr, "getpeername() insufficient cache\n");
+    return 0;
+  }
 
   if (addr_cache[sockfd] == NULL)
     return sys_getpeername(sockfd, addr, addrlen);
