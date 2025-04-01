@@ -68,7 +68,7 @@ static int version = LIBPROXYPROTO_V1 | LIBPROXYPROTO_V2;
 
 #ifdef GETPEERNAME_CACHE_ENABLED
 // cache of sock addresses
-#define CACHE_MAX 4096
+#define CACHE_MAX 204800
 static struct sockaddr *addr_cache[CACHE_MAX + 1] = {0};
 #endif
 
