@@ -230,12 +230,14 @@ int close(int fd) {
     if (debug)
       (void)fprintf(stderr, "close(): freeing cache\n");
     tmp_addr = addr_cache[fd];
-    free(addr_cache[fd]);
     addr_cache[fd] = NULL;
   }
   int ret = sys_close(fd);
-  if (ret != 0 && fd < CACHE_MAX)
-    addr_cache[fd] = tmp_addr;
+  if (ret != 0) {
+    if (fd < CACHE_MAX)
+      addr_cache[fd] = tmp_addr;
+  } else if (tmp_addr != NULL)
+    free(tmp_addr);
 
   return ret;
 }
