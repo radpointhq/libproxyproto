@@ -224,14 +224,18 @@ LIBPROXYPROTO_DONE:
 
 #ifdef GETPEERNAME_CACHE_ENABLED
 int close(int fd) {
-  int ret = sys_close(fd);
-
-  if (ret == 0 && fd < CACHE_MAX && addr_cache[fd] != NULL) {
+  
+  struct sockaddr *tmp_addr = NULL;
+  if (fd < CACHE_MAX && addr_cache[fd] != NULL) {
     if (debug)
       (void)fprintf(stderr, "close(): freeing cache\n");
+    tmp_addr = addr_cache[fd];
     free(addr_cache[fd]);
     addr_cache[fd] = NULL;
   }
+  int ret = sys_close(fd);
+  if (ret != 0 && fd < CACHE_MAX)
+    addr_cache[fd] = tmp_addr;
 
   return ret;
 }
